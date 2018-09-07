@@ -1,5 +1,5 @@
 #!/bin/bash
-comma_separated_list=$1
+cid_list=$1
 mimeType=".json"
 # Creates a JSON file for the Postman Runner service 
 # Which significantly cuts down on Syncing content cache for multiple CID's
@@ -17,22 +17,23 @@ function init() {
 function readSyncListFile() { 
   totalFileCount=0;
   #Remove the output file if it already exists in the directory
-  if [[ -f $comma_separated_list$mimeType ]];
+  if [[ -f $cid_list$mimeType ]];
   then
-    rm $comma_separated_list$mimeType;
+    rm $cid_list$mimeType;
   fi
   #Create the output file
-  touch $comma_separated_list$mimeType;
+  touch $cid_list$mimeType;
   
-  if [[ -f $comma_separated_list ]];
+  if [[ -f $cid_list ]];
   then
-    echo '[' >> $comma_separated_list$mimeType;
-    while IFS='' read line;
+    echo '[' >> $cid_list$mimeType;
+    for line in $( <$cid_list ); #$( <$some_text_file ) is how this files contents get read line by line
     do
-      echo '{"activity_id":' $line '},' >> $comma_separated_list$mimeType;
+      echo "THE LINE, $line";
+      echo '{"activity_id":' $line '},' >> $cid_list$mimeType;
       totalFileCount=`expr $totalFileCount + 1`;
-    done < $comma_separated_list
-    echo ']' >> $comma_separated_list$mimeType;
+    done
+    echo ']' >> $cid_list$mimeType;
   fi
   echo "Runner JSON file complete.";
   echo "Total number of CID's: $totalFileCount";
