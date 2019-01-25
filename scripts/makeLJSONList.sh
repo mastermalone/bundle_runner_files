@@ -27,11 +27,20 @@ function readSyncListFile() {
   if [[ -f $cid_list ]];
   then
     echo '[' >> $cid_list$mimeType;
+    file_lines=$(< "$cid_list" wc -l); #Get total line count from the file
+    total_file_lines=`expr $file_lines + 1`; #add 1
+    
     for line in $( <$cid_list ); #$( <$some_text_file ) is how this files contents get read line by line
     do
-      echo "THE LINE, $line";
-      echo '{"activity_id":' $line '},' >> $cid_list$mimeType;
       totalFileCount=`expr $totalFileCount + 1`;
+      if [[ $totalFileCount -lt $total_file_lines ]];
+      then
+        echo '{"activity_id":' $line '},' >> $cid_list$mimeType;
+      else
+        echo '{"activity_id":' $line '}' >> $cid_list$mimeType;
+      fi
+      #echo '{"activity_id":' $line '},' >> $cid_list$mimeType;
+      #totalFileCount=`expr $totalFileCount + 1`;
     done
     echo ']' >> $cid_list$mimeType;
   fi
